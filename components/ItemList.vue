@@ -6,7 +6,7 @@
         <div class="input-group mb-3" v-for="(name, index) in nameList" :key="index">
             <div class="input-group-prepend">
                 <div class="input-group-text">
-                    <input type="checkbox" aria-label="Checkbox for following text input" :id="index" :checked="name.selected" @change="checkboxChange($event)">
+                    <input type="checkbox" aria-label="Checkbox for following text input" :id="index" :checked="name.selected"  v-model="checkedBox[index]">
                 </div>
             </div>
             <input type="text" readonly="readonly" aria-label="Text input with checkbox" class="form-control" :value="name.value">
@@ -20,44 +20,54 @@ export default {
         return {
             nameList: [],
             checkedBox:[],
+            selectedName: [],
         }
     },
     mounted() {
         this.$root.$on('pindahKanan', () => {
-            console.log('test pindah kanan');
             if (this.listname == "ANALYST") {
-
+                this.changeSelectedType('PROGRAMMER')
             }
         });
         this.$root.$on('pindahKiri', () => {
-            console.log('test pindah kiri');
             if (this.listname == "PROGRAMMER") {
-                this.$store.commit()
+                this.changeSelectedType('ANALYST')
             }
         })
     },
     computed: {
         getNameList() {
-            if (this.listname == "PROGRAMMER") {
-                this.$store.getters.getLeftList.forEach(name => {
+            this.nameList = []
+            this.$store.getters.getNameList.forEach(name => {
+                if (name.type == this.listname) {
                     this.nameList.push({
-                        value: name,
+                        value: name.label,
                         selected: false,
                     })
-                })
-            } else if (this.listname == "ANALYST") {
-                this.$store.getters.getRightList.forEach(name => {
-                    this.nameList.push({
-                        value: name,
-                        selected: false,
-                    })
-                }) // call function getter untuk mendapatkan data
-            }
+                }
+
+            })
         }
     },
     methods: {
-        checkboxChange(e) {
-            console.log(this.nameList,e)
+        changeSelectedType(newType) {
+            this.selectedName = []
+            for (var i = 0; i < this.checkedBox.length; i++) {
+                if (this.checkedBox[i]) {
+                    this.selectedName.push(this.nameList[i].value)
+                }
+            }
+
+            this.selectedName.forEach(name => {
+                this.$store.commit('changeTypeInList', 
+                {
+                    name: name,
+                    type: newType
+                })
+            })
+
+            this.checkedBox = []
+            this.nameList = []
         }
     },
     props: ['listname'],

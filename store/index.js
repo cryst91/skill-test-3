@@ -1,29 +1,34 @@
 export const state = () => ({
-    leftList: ['AGUES1', 'AGOES2'], // membuat state
-    rightList: ['MANTAB', 'SLURR']
+    nameList: [
+        {
+            type: 'PROGRAMMER',
+            label: 'AGUES1',
+        },
+        {
+            type: 'PROGRAMMER',
+            label: 'AGOES2',
+        },
+        {
+            type: 'ANALYST',
+            label: 'MANTAB',
+        },
+        {
+            type: 'ANALYST',
+            label: 'SLURR',
+        },
+    ],
 })
 // getter
 export const getters = {
-    getLeftList (state) {
-        return state.leftList  // getter untuk di panggil oleh commponent atau function untuk mendapatkan data.
-    },
-    getRightList (state) {
-        return state.rightList
+    getNameList(state) {
+        return state.nameList
     }
 }
 export const mutations = {
-    addLeftList (state, name) {
-        state.leftList.push(name) // mutation untuk merubah value state
-    },
-    removeLeftList (state, name) {
-        state.leftList.splice(this.events.indexOf(name), 1); // mutation untuk merubah value state
-    },
-    addRightList (state, name) {
-        state.rightList.push(name) // mutation untuk merubah value state
-    },
-    removeRightList (state, name) {
-        state.rightList.splice(this.events.indexOf(name), 1); // mutation untuk merubah value state
-    },
+    changeTypeInList(state, payload) {
+        var idx = state.nameList.findIndex(function(obj){return obj.label == payload.name})
+        state.nameList[idx].type = payload.type
+    }
 }
 
 const actions = {
